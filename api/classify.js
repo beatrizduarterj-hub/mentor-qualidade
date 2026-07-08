@@ -12,7 +12,7 @@
 //      ANTHROPIC_API_KEY = sk-ant-...   (sua chave real da Anthropic)
 // 4. Deploy. A URL final da função vai ser algo como:
 //      https://SEU-PROJETO.vercel.app/api/classify
-// 5. Cole essa URL na constante https://mentor-qualidade.vercel.app/ dentro do index.html.
+// 5. Cole essa URL na constante CLASSIFY_ENDPOINT dentro do index.html.
 
 export default async function handler(req, res) {
   // Só aceita POST, e só do seu próprio site (ajuste o domínio abaixo)
