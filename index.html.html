@@ -1048,7 +1048,7 @@ function ClassifierPage({
     className: "primary",
     onClick: classify,
     disabled: status === "loading" || !text.trim()
-  }, status === "loading" ? "Classificando…" : "Classificar atendimento")), /*#__PURE__*/React.createElement("div", {
+  }, status === "loading" ? "Classificando…" : "Classificar atendimento"))), /*#__PURE__*/React.createElement("div", {
     id: "result-zone"
   }, status === "loading" && /*#__PURE__*/React.createElement(Spinner, null), status === "error" && /*#__PURE__*/React.createElement("div", {
     className: "error-box"
