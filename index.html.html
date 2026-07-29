@@ -852,8 +852,10 @@ function Spinner() {
   }), /*#__PURE__*/React.createElement("span", null, "Meditando sobre o atendimento"));
 }
 
-// Simula a ficha de um caso já classificado, como ela apareceria dentro do
-// Salesforce: seções fechadas em cards, campo + valor + lápis.
+// Ficha de resultado só-leitura: campos com os nomes que a gente já usa
+// (Tema, Tipo de chamado, Motivo, Submotivo, Causa raiz, Justificativa),
+// organizados em cartão com seções, sem badge de confiança e sem ícone de
+// edição (pra não parecer editável).
 function ResultCard({ data }) {
   if (data.fora_do_escopo) {
     return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
@@ -904,17 +906,6 @@ function ResultCard({ data }) {
               )
             )
           )
-        )
-      ),
-      // Seção: Encerramento do caso (fica em branco de propósito — é o campo
-      // que a pessoa preenche na hora de fechar o caso de verdade)
-      /*#__PURE__*/React.createElement("div", { className: "sf-section" },
-        /*#__PURE__*/React.createElement("div", { className: "sf-section-header" },
-          /*#__PURE__*/React.createElement(ChevronIcon, null),
-          /*#__PURE__*/React.createElement("span", { className: "sf-section-title" }, "Encerramento do caso")
-        ),
-        /*#__PURE__*/React.createElement("div", { className: "sf-rows" },
-          /*#__PURE__*/React.createElement(SfRow, { label: "Observação de encerramento", value: "", empty: true })
         )
       )
     )
