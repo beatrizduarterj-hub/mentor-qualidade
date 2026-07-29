@@ -401,7 +401,6 @@
     line-height: 1.45;
   }
   .sf-value.empty { color: #B7BBC4; font-style: italic; }
-  .sf-pencil { width: 14px; height: 14px; color: #A6ABB8; flex-shrink: 0; margin-top: 2px; }
   .sf-alert-tag {
     display: inline-flex;
     align-items: center;
@@ -834,27 +833,13 @@ function ChevronIcon() {
   }, /*#__PURE__*/React.createElement("path", { d: "M6 9l6 6 6-6" }));
 }
 
-// Ícone de lápis (campo editável), estilo Salesforce.
-function PencilIcon() {
-  return /*#__PURE__*/React.createElement("svg", {
-    className: "sf-pencil",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
-  }, /*#__PURE__*/React.createElement("path", { d: "M12 20h9" }), /*#__PURE__*/React.createElement("path", { d: "M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" }));
-}
-
-// Uma linha "rótulo à esquerda, valor à direita, lápis no final" — o mesmo
-// padrão visual de um layout de registro do Salesforce.
+// Uma linha "rótulo à esquerda, valor à direita" — sem ícone de edição,
+// pra deixar claro que é só leitura (a sugestão do mentor).
 function SfRow({ label, value, empty }) {
   return /*#__PURE__*/React.createElement("div", { className: "sf-row" },
     /*#__PURE__*/React.createElement("div", { className: "sf-label" }, label),
     /*#__PURE__*/React.createElement("div", { className: "sf-value-wrap" },
-      /*#__PURE__*/React.createElement("div", { className: `sf-value${empty ? " empty" : ""}` }, value || "—"),
-      /*#__PURE__*/React.createElement(PencilIcon, null)
+      /*#__PURE__*/React.createElement("div", { className: `sf-value${empty ? " empty" : ""}` }, value || "—")
     )
   );
 }
@@ -884,41 +869,39 @@ function ResultCard({ data }) {
 
   return /*#__PURE__*/React.createElement("div", null,
     /*#__PURE__*/React.createElement("div", { className: "result-topbar" },
-      /*#__PURE__*/React.createElement("span", { className: "result-eyebrow" }, "Classificação sugerida"),
-      data.confianca && /*#__PURE__*/React.createElement("span", { className: `badge badge-${data.confianca}` }, data.confianca)
+      /*#__PURE__*/React.createElement("span", { className: "result-eyebrow" }, "Classificação sugerida")
     ),
     /*#__PURE__*/React.createElement("div", { className: "sf-card" },
-      // Seção: Motivo do Contato
+      // Seção: Classificação do atendimento
       /*#__PURE__*/React.createElement("div", { className: "sf-section" },
         /*#__PURE__*/React.createElement("div", { className: "sf-section-header" },
           /*#__PURE__*/React.createElement(ChevronIcon, null),
-          /*#__PURE__*/React.createElement("span", { className: "sf-section-title" }, "Motivo do Contato")
+          /*#__PURE__*/React.createElement("span", { className: "sf-section-title" }, "Classificação do atendimento")
         ),
         /*#__PURE__*/React.createElement("div", { className: "sf-rows" },
           /*#__PURE__*/React.createElement(SfRow, { label: "Tipo de chamado", value: data.tipo_de_chamado }),
           data.subtipo_reclamacao && /*#__PURE__*/React.createElement(SfRow, { label: "Subtipo da Reclamação", value: data.subtipo_reclamacao }),
           /*#__PURE__*/React.createElement(SfRow, { label: "Tema", value: data.tema }),
-          /*#__PURE__*/React.createElement(SfRow, { label: "Motivo de Contato", value: data.motivo }),
-          /*#__PURE__*/React.createElement(SfRow, { label: "Sub-motivo de Contato", value: data.submotivo }),
-          /*#__PURE__*/React.createElement(SfRow, { label: "Assunto", value: data.justificativa })
+          /*#__PURE__*/React.createElement(SfRow, { label: "Motivo", value: data.motivo }),
+          /*#__PURE__*/React.createElement(SfRow, { label: "Submotivo", value: data.submotivo }),
+          /*#__PURE__*/React.createElement(SfRow, { label: "Justificativa", value: data.justificativa })
         )
       ),
-      // Seção: Causa Raiz (só aparece se existir, já que só se aplica a Reclamação)
+      // Seção: Causa raiz (só aparece se existir, já que só se aplica a Reclamação)
       data.causa_raiz && /*#__PURE__*/React.createElement("div", { className: "sf-section" },
         /*#__PURE__*/React.createElement("div", { className: "sf-section-header" },
           /*#__PURE__*/React.createElement(ChevronIcon, null),
-          /*#__PURE__*/React.createElement("span", { className: "sf-section-title" }, "Causa Raiz")
+          /*#__PURE__*/React.createElement("span", { className: "sf-section-title" }, "Causa raiz")
         ),
         /*#__PURE__*/React.createElement("div", { className: "sf-rows" },
           /*#__PURE__*/React.createElement("div", { className: "sf-row" },
-            /*#__PURE__*/React.createElement("div", { className: "sf-label" }, "Motivo da Reclamação (Causa Raiz)"),
+            /*#__PURE__*/React.createElement("div", { className: "sf-label" }, "Causa raiz"),
             /*#__PURE__*/React.createElement("div", { className: "sf-value-wrap" },
               /*#__PURE__*/React.createElement("div", null,
                 /*#__PURE__*/React.createElement("div", { className: "sf-value" }, data.causa_raiz),
                 showValidarArcotech && /*#__PURE__*/React.createElement("div", { className: "sf-alert-tag" }, "⚠️ Validar com Arcotech"),
                 data.alerta_causa_raiz && /*#__PURE__*/React.createElement("div", { className: "sf-alert-note" }, data.alerta_causa_raiz)
-              ),
-              /*#__PURE__*/React.createElement(PencilIcon, null)
+              )
             )
           )
         )
@@ -931,7 +914,7 @@ function ResultCard({ data }) {
           /*#__PURE__*/React.createElement("span", { className: "sf-section-title" }, "Encerramento do caso")
         ),
         /*#__PURE__*/React.createElement("div", { className: "sf-rows" },
-          /*#__PURE__*/React.createElement(SfRow, { label: "Sub-motivo do Caso", value: "", empty: true })
+          /*#__PURE__*/React.createElement(SfRow, { label: "Observação de encerramento", value: "", empty: true })
         )
       )
     )
@@ -1370,7 +1353,7 @@ function ClassifierPage({
 
     /*#__PURE__*/React.createElement("div", {
       className: "footer-note"
-    }, "Cobre apenas o tema Plataformas Digitais · não substitui a revisão de quem fecha o caso.", /*#__PURE__*/React.createElement("br", null), "Conectado como ", userEmail));
+    }, "Não substitui a revisão de quem fecha o caso.", /*#__PURE__*/React.createElement("br", null), "Conectado como ", userEmail));
 }
 
 function WelcomeGate({
