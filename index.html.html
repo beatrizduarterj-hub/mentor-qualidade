@@ -367,20 +367,6 @@
   .oos-box p { margin: 0; font-size: 15px; line-height: 1.55; }
   .oos-box .oos-sub { margin-top: 8px; font-size: 12.5px; color: #B9C2E0; }
 
-  .need-more-box {
-    padding: 20px 22px;
-    background: #FFF4E8;
-    border: 1px solid #F6DDB6;
-    border-radius: 14px;
-    color: #5C3D0C;
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-  }
-  .need-more-emoji { font-size: 26px; line-height: 1; }
-  .need-more-box p { margin: 0; font-size: 15px; line-height: 1.55; }
-  .need-more-box ul { margin: 10px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }
-
   .result-card {
     border: 1px solid var(--line);
     border-radius: 14px;
@@ -457,16 +443,6 @@
     border-radius: 8px;
     line-height: 1.5;
   }
-  .causa-note {
-    margin-top: 8px;
-    font-size: 12px;
-    background: #EAF1FF;
-    border: 1px solid #C7D9F7;
-    color: #1C3E8A;
-    padding: 8px 10px;
-    border-radius: 8px;
-    line-height: 1.5;
-  }
   .justificativa-box {
     padding: 16px 20px;
     background: #FAF8F6;
@@ -530,72 +506,54 @@ if (!window.storage) {
 // URL do proxy que fala com a API da Anthropic (veja instrucoes de deploy).
 // Troque pelo endereco da sua funcao serverless antes de publicar este arquivo.
 const CLASSIFY_ENDPOINT = "https://mentor-qualidade.vercel.app/api/classify";
-
-// URL do Google Forms (versao /formResponse, nao /viewform) que recebe cada
-// classificacao e joga automaticamente na planilha vinculada a esse formulario.
-const FORM_RESPONSE_URL = "https://docs.google.com/forms/d/e/1FAIpQLScyzz0hxZP4zXxE5F36b3_65mdC1swwyKzxskDwqbO9v3PWOg/formResponse";
-
-// Mapa de cada campo do payload para o "entry.xxxxx" correspondente no formulario.
-// Se algum dia voce editar o formulario e a ordem/quantidade dos campos mudar,
-// os numeros de entry tambem podem mudar - reobtenha-os pelo Console do navegador.
-const FORM_ENTRIES = {
-  data: "entry.1770591542",
-  hora: "entry.94725210",
-  email: "entry.1546593820",
-  resumo_atendimento: "entry.570159363",
-  fora_do_escopo: "entry.676516634",
-  mensagem_fora_do_escopo: "entry.2031892300",
-  tema: "entry.1576461354",
-  tipo_de_chamado: "entry.1831923822",
-  subtipo_reclamacao: "entry.202603350",
-  motivo: "entry.1676276300",
-  submotivo: "entry.401612149",
-  causa_raiz: "entry.1496249806",
-  alerta_causa_raiz: "entry.1233456808",
-  confianca: "entry.114756835",
-  justificativa: "entry.585474254"
-};
-
 const ARCO_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACQCAYAAACyAlbPAAAzRUlEQVR42u29aZhdV3klvN699zm3bk2SPMjYjHFshpKNB1m2VZJ8qzQYYzzDLegGvnRIPoYm+aBDkmaybx3bEPIkwJcQAp3QoWmar0kdYslmiG0NVdcuTR4YAhIGTD4GGxvJtoaqusM5e79v/7j3lkqyZEulGm6V9noePfbzSFV1a5+913nX2mu/m+Ax7yAAIZ9X2LOH0FNkisAT//7ALVecH5JalTq5WoBlInI2gFAr2kdEj5Ngs0DF7eu3/gAAJJ/XiGMmQKbpE1N+ACruIwcAa27feokC3sKMNQI+DyILiVAF1JOKsEOEN2oJHrwvWv6Lid8lnx/Qe7rOpMW790oc5xkg8bNhfoH8EMyP5ygF0NBQTvUsXiwUx+4wOsivPHMsdVeApEdAK1nkglaj2wAgZUbKAgGgiRAoQkCEsnMVgO5J2f7Forsf/j4AFAAV4XDyO2kUCgpRxACwurDtUqXwEYFcr4NMRpyDcAphBoiglAFpA4iAbfUASP0QLA+yksGkjEeGP7Vq32EENiAaAOJd/dL4GR6esDxmuYqiYtEe9nfXLW0tBS2vF3DOsawmhWVtWi9SimBZUHEMy8wEiBApqs8DAQQCAUQUke4MDErOWRZ85qny3ttefe/jVSlAHVmxTZ6rREURce73vtwSnnv+nUL6gzrIaFsZg4g4AggEGp+nIiJEDBFS2ihlMlAmANsELqnuBbCDtN6snTxIz+3fde/nrq1O/Hm5wqBZvGSvxPk8g3z15QnLY1ZkngBUvWX5a6qMbk2ylgUrjKJXZI0Gs6DsGAkzE4EhUCAievFnLyzCikgtyARUSuzwQYy9+ez1/7ZHCgVFJ1mxNMhq9Uc2naWybf8SZNpWJKX9IiJMRPo4RkQExCQQgShlAqVNBqQUbLUEEXmcQMMksplbwm2bP3L5vx/584cwpLx89ITlMVUEVSgQhoZUvHix9B0h80ZvXnU2CS+34taSopUi8rrOQBuAUHYOVRYBxEFAmFBFTeJziAjsotAEJet+OFq1V5/1nYefFkDRZOVhXQZ2F+4/p1W136/D7JK0fCAlUsHkB0xEACaQgGCUCaFMBoDAVUsVAXYR0QMANqec2VmMLnvmcPk4oPfsOpN60MNRRIJp8+s8PGHNF5IqQGF3ngDgSB/qmWsu7wwz5iKlcRUzrxbgsnajOxUREmZUHINFHIB6AQU1pZ9NkC4MTTBi3UMdnWEOpcXp5Ix4oXw+VuWuczNlqjwQZFqXpuWRFETB1A4mGAALhEgprRvy0VlwWn0WwEMg2UKQBzPc+sNvRZeVjup/5eHloycsj+fJvGLRTVz8ku8KS2nHhUx0FYCcCJYFSp3TYhRcXeZZZgeCQEiBQDTNz5MF6aJMEOyrJl887e6d7xvI5/WRld+LIZ8f0HHc51bfNvjfw7bT3pWO7UtxMpXV8ZdfQiAWiFLaKB20gJSGTUqAc78Uop0EDEGp4RVu+a4oIp7w5ZTrH9KLd++VeMD7X56wTkGZd7S4wb4br3hVxqjljuVqEVmpSJ3XFmiINHyoqZF5J/MrEOBatDJV4ZWdd+3YKvm8puMkrfzAgI77+tzqaLjXmMwWl1YsRMzMP4i6/wUISLTSIakgA4BgK6MiwGNEqkjCG4HWHZuipb85mv/l5ePMw/ghmN4XghRAGMopNOIGUSQAGEXgYH7lmcrapQLkIOhhyEUtSmVJESqOUWHG/iS1hxMUmVl8zRBDYBShlOBjAK5FV9dxL9auXbsEAMi5WylQIsx19TrTvwURAbrxzmabsrOJNPwvbTKv0yZ8nQi/16blg2v6h78HkSFRVFSZlu9GH6YDALg4QT7u2TVERQyxj0/4CmvOyrznxQ1+L9dSOphcKCS9zmGNUljaotXpRilYFpSdg2MZl3lEU+tDTWGVBQBJEOhXt8Zbf3U8UYdCoaCiKOI1hY2vJsruEmHdpPNPRKQmHwmklNLKtEBpA2erYJs8DeAhQG+SgIouqewuRr0TnzPlCoPaxyd8hTUXfCgmgDFBIlXy3a+xzi2H0JqRA9UVWtHvtBkDVjWZN5o6BjkmAQmRGt/Sb95XCbGIWxCazMHUXQngV0NDOQUUX5CwhtCjgIgFYbfJtJq0POKOL74wK/UXobYLCmEnNikx1bK1iox5iTaZG0ipG2xlDKTMY2v6tw6T8CCZYPvGW6/8/ycSmI9PeMJqIh+qhymKDiOokeuvOEtpfaUFryNgZTXlJZ2BMcAhmZdMlHlECoACzaFylyC1NS3nA0DPiZX0r6XaHsEcWbh1+Vh/OGJTSW16KD6hw9cqk3ktRP7QJmPltdHwD0XwABFtUkwPRxE9hwnxj8bxIe9/ecKaPpIqQB127GXchypi/5tWLspk+GIWyVmRnAAXtxhaqJRB4mpxg/2JdUQQGZd5s+pDTeViXnjiektl5/avPNH/AlyaMKdJIz6RVSa8XOnwcnbJn7qkundN/9ZHSKkiiQwnXP1BHPWOAsBE/wvw8QlPWFMn81zNn6lJHsnnw1L6qwst0VUKWM1iL1ekFrcYPR43OJDaeqq8HjeoSx+ieTdQJ+yxEWRemdJ1n1ERCBAWWy0LoVKPTwRn6iDzRlL6jS6twIh5Yl00vF0EgyT0YDfu3x3VD3zX9aPKoUf5+IQnrOMnqEbcYILM23fjFa/KkF5pwVeP2ieWE6nzOoPasZcKM0qWueQcN2SemiDzPI4ca1Hz97cjotrZR0UgiEsldbYerhWtTPgyFWTyAOVtdZSHse6xtf3rhoX0/cRu+6Zo5W+KqO8y0pHyEeL9r1OUsGo+1BHdDRoEVQQOXrf0DBWGS0WQA6THiVySDVQLoI4eN6jJPE9Qx1dinTqj9CLxCWXCLmXCLgi/2yalg2uj4UcYKCqoIkpj34//ct2BI+XjqR6fMKcUSeXzaqgRN4ggDZn35HVLWxeFwSUsyDGQA7A0VHR6MCFusD9J56kPNcNrWOjUHTWqS8f6lHRpRTitsgCktOpUpmW10Wa1S6vgbPapNYUHHgGZQa3UAwvcr34Y91Ey8dudit0nzHwnqKPJPAFo5JblrwkEyx1knROsIKhXtAVqvLvB2DHiBnN9uUktRyUA1Bz/RRgQAs3ZJ/IC8QnRZIKztcleT0pdb6slPEfn/GxtNPwghDeRDnecqvEJM68I6lhxg2KtuwFLspyI1o6AVrLjrpYw0ECNoCrMUkmcm9NxgxcBi3ColDKKqGx5dsi35k6f5MMWqKBFCVuwTZmUmge+2MT4BD0/PmHC85XJnA/wu2y1VFnbP/xDhjyoyWwilp2nSnxiThPWC8UN5O2Xd46U9cVKkGORXpb00jZjFox3NxDC/iR1E8yGeS3zWMQuDI05mLpnrJOdoaZrE5aT4mOeFNcInSRZCZkALq18G6DuINtxmi2PWiiaX2rhiPgEHx6faFEmXGZMuIxd+icure5d07/1YSIMKqYHnsUzP4qjG0oT/a+afOyRud59dU495COPvRweN+gKx2znBQJaCcjqkTFcHmo6OzOhu8HB1B7e3aA5k9ZTO2YiDBAWZQJTtvxw2fFbM0r9dYtWlDjrMMfGQAA2QVaLTUc5UJezS+OgfcElydgBrq/z+bkLeWR8IikLJYfFJ64lpa+1SQkLedEv10TD28E0yJq3Dt66cneRyE6YFHO2+4RpeoI6srvBhLhB+abu33XglQxZPZqq5SCc3240pC7zSpal7A6Tec1+7GWKx09si9aGCBiz7rO/0Ac+/DK0viyAvmUkdTIrhH2Su4REpGxlVKDUW9mmfzZy8Dcr2he+7K9MpvX97FKwTd38fxG9aHzilSrIvBKgt9nqKK+JhnejMLxVKbU5YbW9SPREEbCNtTCX5GOzEdbzL1M4srtBml4GorVOpCclXtJhdKZx7KXKjP3pobhB7XV06u3mMSAkwgszgSml/MsU8p6Fd22/DwD233Tlu1tDXdv1xJyUUQQRG2Q7jZQPvmvHZ/tuB/BHawvD95PWXwiyneek5YOOUGsFfUo88BeLTwSZC7QJLxDm9+hqaWxN//D3CRgkoUHJZh6NP3zZ8+ITQHNe3jHrE/YoMk8myrwSL3y9ddyrQKth7bKMMacbIqTMKNePvUzsbkCneNyARVyolM4arUup+/+etvwnv/vNnb+VQs7gFzD79lfyFcuoy+JZeCOdPIkIRDlbBYn05QqDnwSATdHKe3J//p3vhm0L/ybIdtzikhLYOXcqyP6jycfD4hNJRTipxyeUalNBZoXSwQq21Y9zpfLUmv4HdyqoTRAUF+5+8sfxxPQ9hHKF5pGPZjYJ6mgy78AN3a/RSlYwePWIpSsV5Hc7QzMeNxhNLWPiZQqnmMx7gXEVEeGFodEVx8+OWvvBBRt2/i8A+Ok112Qoure6/+Yr13YE5tzR1PJc9nqISHFSZRW2LAnS5MpN0arhfOFHYRxd8ASAN6+9ffgPofSngyDbaStjFiR6Hh6MOpH661B8QpzYpMwkZRFAKWPO1kHLTUR0U1oZ5X1LznlszQVbtwpjSwC1476IflGMDsnHw5sXznz63swIQTV8qKOkykeuv+Is0fpKBV7NQE7glrQFgQH0MVLl/tjL0aoqo5TuCIwupe7eUSR/dNaGR3/euAAVHR22Vt3IOw2RgMCY6zksgLUJVZpU3w5geA/2MkQoH8cq7lv5pdWFB7aRyOdNa0ePLY9ChE/Nauto/FWPTxCe332CTNhlTNgl4P/bVkrlNf3DPyBgSLTabG31kSii/TiseeHMXt4xLcv+eXGDCdh7Q3dHW4CLLUuPiPQQcEmr0Yv0EZcpHJ4q9zhWVQWI6wyMqToecYKPdKzf/nkAGMzlTG+xaKVWWojctOz0A9CPG6KFaS1bQJP/uWIXhoHZV7WfOe3uHR+SXM4c2azwSOQKg6YY9do1hQe+GGQ73pOWRizoJF6YAlbGKGftU47cq4tR72gtE0vS+FkAaG3/1j8nrftJ6RZXLVkQTuVq60VHdbx5IYSU0loFGShdv/vRVn9LgkdImS2i3QNpmv6oGPVWjnzOi5f0yHR1nzBTtHBeoLtBV7i/umCJ0egmoNcJL1eizukI9MS4weF35s3X7gZTO7OcUqQ7g8CUUru5LPLHZ2zY+WMp1AieojqB5HIaxaI9yOaGBRm9cF+SOjUfKg2Ccta6oKXtbKSldQA25ApDuhjBFqNeWyiIivohm4j+cvVHixtVS/h3QeuC5Wn5oAgLkyL/InxB+UhHyEdRygRnaZN5Eyn1JpuUEVDw72ui4a1gGiKttm+69crHpjs+YSZLUHE+r/LH8KHG4wYkvaOp6jb6UNyg4hglZilPSJX77gYnXlV1BMYkLKWxxPa3b9jxVwAguZwZJ6oGivUXh+K3O1EylUOsJke0NHWcBQGRkOA/Ali/ePfe8QURRcSIam/8LVHuu7nC4FVSxceVCT5GyhhfbZ2ofGyk723j8g6jTOZcbcJzAXqnq47ZtdHWH0v/g1uVUpudou1biJ48dnxicv6XOV6CwpGXKRzR3SAIw6VWsJpFehPw6zsDkwFw9LgBTs24wVRUVVqR7ggCU0rdYJXlA6fdveOHIiD0g44kq0av9f23rDyX2K4as44whWb7rO93k2iXlElYrl5XuG9xHL1hD0Ro4pt8vNqKlAWkv+fWB/7VBPjboHXB5Wn5IETEe1snUn9NjE/U0/f1vzMqCC80JrxQmN/LSWlkTf/wd4nUFsAWW1vO/G78X183UqeMuv914vEJczwy78juBvKOdW2lsQMXWqYVpGg1AZcbRWe0KFWLG1iuHXvxcYMpq6pEhBeERlcdP7+qoqI9qtlZ77VOnN7UGQbh/iS1s5+9UlO6gthZF2Q7Om1Z3gjgf+b6h/T4W31itVW/HGIoumpnV35g1TkXvOzjSgcfIW2Mq5YtIPqUyW1NoSw/9EDlyPhEhwoyOaWDnEurKJWffXJN/4PbCbJFqXDbs2eZ3XEfpRO/W64w+KLy0RzThwLksO4GN1z+OkVqORPWjoyNrDCkX96Z0RPiBrXuBj5uMLVo5KraAqNLzm3k1P6Xjm8+vKtR9T5PAh4uB50AtF/wVstS2weiWaYeYZrqVQMRCPA2AF/pQc/4DtaRP7kY9dr6Ra7J7hi39dy65dsG2c+Y1o5uVxkDs/PV1pT4X4fHJ2rp++ClOmh5C0BvcdUxLHzK/mxNNPyAEG2Sqjw8+ImVPx/vPkHH7j5hJJ+vGdwTZR6AsRu6z7HaXUaiekcIa0RkSVtgVKO7QZVFqknqfNxguuQfGBBZFAa6bN0zYyl/tH3D9n8cr6rGq95jfH2hoCiKeOTGKy80ii4bs06a4tygmupVIsolJRBR7uqPFV8eRfRrFArqWBIjjvvcoWqrdyfy+avWLvngB0np/iDMtqeV0VMrJT8D/lctfW/Z2RF5XvcJ4T+wXErW9m/9nghvgtFD0Pp70Ufp2YmuQ00+xjCN2MG+G3MLW1RyqYX0EqjHiby+TZvORtyg7GS8u0GdSn0Tu2mTgLUzgIEijFkXJ6n609O+Vbv/D5iwA/hCGBpSANgqecvCwKjpkIOT8bBIpnqvm0hYbNDakbWVsesAfCGHHjXeavgFqq2atwXeFNOnV39k078ii08H2Y5rXFKBOHtysQuP58nHieX9Ed0nQmWCK5QJr2CbfIyT5Jk1/cPfI6ItYB5qQfbf4j4qAYDZf9MV7zNKrWVOVihFZ7VrDcu13byR9LBjL+TL5emuqsQRkVoYBqacun8vO/lwx/rt8XhVdTxENVEOFgpq//fuvTlRXLswYp6+XAQgYQdhfguAL/Rg6FiyEEfxtuo7ib27Abxx7e3Df0ik79DZjpek5YPzuwNEE/hf490n0gpTUqnFJ7Q5wwSZdaT0OpdUUObyL9fevn2IXbpJidCFbZngFoGcNWZZ9iepHU2tsyJCRJpAph7e9LXU9C04YRHXHhhtiDBm3Wf3JvqyjvXb44F8XhcA9WLBzMO+Xx6aADnwg3svCYy6oOxY5vOiI4KySRlQqrv3jq2vjKKIUSgc9+9bjHotCgWFQkFtum3ll1QludQmY182YVaZsEVBYAHxN9hMv3w0RKTEWUkrJZeWRiy7BETqlZn2036PgMvMwrPSDxzYgxVZrS4oWSd+N29mcbipbrcx4c8779qxtUY8eX3kSYHjwp4cAUUIcEub0TRdu4OTZsCpX/qEmixsseWR6wH83XHIwiPLrfFq674o9xSAd60tDH8DSn8qaO280FZGwOyP98wUfzXiEyLklAmpsv/p7512wVUfUvQPj6Yi9CeKSCnlb6GdQaJiEfCiMNCKsLdk3fvb7tqxsvOuHVsllzMC0KTIqiEH83kNwY2Jq3dmaJrJyNNzHAwgcRYCvgUAihiaVEysGPVaiFB+YEBvilZ+J+XK5TYZ/TiUHgta2rUIXK0posdMiA+llJCIIlIfjPvIqcFcziy6e/vmkdR+sTMIDEOsH6cZkH9Gq1ajVMm6r5RdurRt/fa/FwAD+bymYtFOtvH5QD5fk4Ppry4OleoqOZbpOo85uVU7PdxJJMqlZYDU8rWFB1+BE5SFR36zuK/P5fMDuhj1VjbdtvITSJJlzlbvDlpatQ4yXibOzFvdmWyHsdXSZzdFq4ZzhUGjeopFN5DP60UdnX96ILE/a9PasH+DTBNZiQ2IaFEYaMfySMLu6rb12//T6Xc/8uvBXM4QIH2TrarqyO/ZQ/VS+qbWQBMg7tQYXSJmdkFLewvA1wKgHHpOih1rEQihXGHQbLqz58ebbuu+Ka1W8xD+adDaaUCKRE6V8Z3htSLidEursaWDPwzPOOcj+fyALvb3ONV4k9P/2jhGLO9kiDVEIvDycCoHXwAsDAOjgL2j1v6XXb9KujvW79wo+bwWgHpPwFR/UTlYqyxuSB1P6jr56ayVpvIs4dGsLGGGCN0MQHrQMwUvXqpHIAqqUBC1JVrxjcRVl7pk7HZSeizIdmgRYS8Tp3bBkDYQdhWGvOPeD7y62tWVFxDVrg3vi2M3mMuZBffs3Fmy/OGO0OhT5808neMOZhHXERgdEvFY4v5bCe7SjvU7/t/LHn00bZjqNEUvBylAESD7vnvvBYGiC0pNuTs4fXzVkIVCWPGGjxbPjiJiTBFBRlHEUUScHxjQxah3dONtKwoOvNQm1QETtigTZmsyUbxMnIIn6YJMq7ZJ6QNboqv+LVcYNI0Iyvhk7i0WreRy5vS7d356XzVdvzAMDIv3sybrU9XCn6QWhYGuOh6ycCvaN2x/7xnrH3piMJczOBlT/VgYyikAMIauawu0kmZ86dC0VljEzrmgpb0tCWktAMr1D03prl7cd0gmDt628iebC8vf6tLqG5nt94PWTkPaUM3f8gplkr6VDdoWmGTswFcG71j9DxN6mx2lqi8WnRSgENrfH03sY+2BNuw1+gkTlSGihWFgBPT4mEt/v2399t4F6x/acYT8m/oJPVR0AOAEN4yfHZzOuYUTJ5/pTsxQ/cwZCW4EIBNbzkwl6zayW/n8gN4cXXXvb9wTV6TV0Q8B9NugtdMA5P2tSVgnJttu0vLBR5yS99Y2PXrcMW2ImjQp4LT40QMVtjdZJ8+1aKW9CX98g00ALQwDownPli1/vFSyS9vv2vk/BCApFNRUyr+jykGC7L/+yvM0cGnJOkz32cHJHX6e7jN6ol1SAUR6coXBhQ3jfFp+VBRxHNd2E3dHfcnmwsrPVKsHLkmro39D2lSCbIeu9fCEJ67jWD86yGhnq09YsTcXo95K3LXreT2znjfnKIpY8nl95j2P/GSM+c0EpIEisPgS9+gVbM1wXRAabYiSsrWfL7v0kta7tn3ijHsfOij1mAFN93VJNTlI0LimIzDBjMRTmjFgTETM1gUtbacr0FUAkCsMTStxTzhQbR785Buf2lxY+cHUVZa5tPLPKgjJZFq1iPj81rHJipUOFIBRrpRuLEa9T+TzA/poB9iP+pKkOHaSy5kz7945VHL8zhatlSGwJ63DB1lEXEegVZvRquT4rgTu8ta7dvxRI6Yg0+FTHQs9PVz7WLiea3u8004nfAKUtXhJj9QKrOn/XCQQUloI+rqZnBKHQqeii1Hvjzbd1v024bSHbTIUZDu0DlqUiDgIPHGNryMWpQ1IKU6T0lu2fHLtd3OFQVN/CRx/VU+HTPh/HrH2P7cFWmsCn+pxBxGwiLg2o9WC0OjE8bbEuWvb79r+5tPWP/SDiT4VzdBYCUAURTxy/RVnEaS75Bho1rOD0xprODSvXVolCK+75o+/k6mZtjIz9SCRxH3kUBCVzw/oTYWripsK3b22WnkHs/tx2NqpVRDWiUtO8bUkTNoIaaNsOvbOoTtW33ekyX5CNkSDtE7bsPMLB1L3x+1Ga4VTs9JqRBSyRqkFodGW5ZExJ29rW79jRfuGnf8qhYKSAqbVpzomcjkNAC5AT0do2i2zoxkQbE17mpqgOK2KNuGr0oWtlwJAPh/P7MeNaNzfgght7u/+2th+LE0qo38E5p+FrZ1amYBO1SiEiLBSmrQKFCdj7xi8fc3/zhXkBcnquObcIdLa8XcHUvv+NqO1plrL3lOJqFq0UvWE+q6K4//rW+ZlV3bcte2fCfVDylFUu4xjNrB4cU1uOVyvanuDTbsAiGbK+SKnwyxEqTcCwJ6uM2fFcYvjPgciyQ+I3vHZ7vKW/lWfR+vIJa469iEBnjgsCnGKEJewsFJakTZiq9X/sPn21V+rkRW9qO96XG+dcdK6e+ffjyT2XRmtlFFKzedt2yOJikV+NmLd+/c8F17Wetf2r/bFsavLP8yYT3UsORjH7snrlrYC6Ck7Jpqxw87N27FGCMQuBUSuAYBif8+sztXa9e+1/NbGP3vD2MbCys9Iaexil5RvA6mnTxXiEhGnw1BB62qalG7ZcudVXz9esjqhGdcgrUX37PzyiLU3a8JYq9F6voVLDyOqTKCd8M9L1r1/f5pc3Ll++9//TrFYOayt9Gwjn1cAkDXBsqzRL606x5ihy2cndcxGMCOKmQDl0gpIqYvWFB48F0Qy6cPQU/eppOGn5QqDZvOn1j278bbld5Dji2xS6gdo77wmLhZrMm1aQHtsUn7D0B2r7655VnTcHHJCD7BBWmfe/dCGMWt7nMjPF4WBEYid62Z8Y9cva+rST+TxUuo+UHbqkrb12//+pd96tNQw1JuCqBqoH3YmwTUZrVC/hn6GrKKmBgmzM5n2UMCrAeBkD0NPOXFJveKKVuzZdFt3pHV6kU1KdwL4bdDaaQ55XHN8V1FEILBB2wLDNvm+jI2sGrpjdfHFDPYpqenHSeuehx/ZXyovH7PumwvDwBBqmaS5WKKKCLcZrRaGRjuW3SVr3zsyOnZx2/rtf3vmPdtGJhIVNRsx12/GIcI663ja0+0nL9Vm7nKHWupdQIQ3AMDiJXub69nR4cR138dzT226rftWrpQvSisjt4nIk0Frp2nsKsocXV9Qikxrh0mro1+lgyMrN39q3U8nQ1bAJG9+pmLR1g/u7gVww8GbrvhYqNTtRik1Zp0FSFMTv4Ab9/wRke4MjGYIqo4fsQ5/92Tlma+/+t7HqwAwmMuZnmLRNVVFNfH3qF+UWr5l5bmK7YUlxxAiRTM3jk1eZInmtAIwVuYKg+1xX+9oLd5AzUdcgG1c7b4l6v0tgDuuLmz7vK2OvYtA7w6yHecLO9hqieu8r5udqQByQUubcS4tucrYn27uX/kFoHaFV3QCMvCkKqzxMY5jVztyAtW5YecnKsw5y/JovYUKNeMZRAFYIFYTaFEY6IAIVcffqTq5rn39jmWtG3Z85dX3Pl6djSzVpFA/7FxxtrcjMCFDLDU7iYjQDBIBOZuyDlteEii9FJiFeMNJVFz3R93PbSqs+OsMP3OxrY79J5cmO02YVUFLu65P6Gb0uQQCS9pQ0NphOE2GuDS2fFP/yi80Ih6NzguTwUn1+SZAEEEGczlz2obi8HeuOW/FVS1n/FdD9OHOwGT3p1ZQr2RmvSwFkNFKZ41RY6kdLTs7QKAvtq7f/vD4v8vnNeKYm7Wieh7qcQaCvEFmwVOajLib6at7CMTKZJRLk3UAirMVbziZiutbUW8JwFcAfGXNHduuUal9H5S+Lsi0GlstgZ11NXqe1bDwuGoJWjuNTcrPpWm5f3Oh+3NArVd+HPXak338U/IL9haLdiCf19fe+3i1fcOO29mqZSXHXw8U0YLQ6EZb4Jk05if+zI7A6AWh0U7wi1LKd2oyF7XeteMP2tZvf1gKUBN3/WiObB40PLWn3vH6NgFWVpyDSPPfjCMkNLM/rxFv4LXA7McbJlVxoXbcBwA239p978ZC943CdplLSl8E6JmgtVPrsEU1No5mtOqqG+oAKMh2atI6Saulf0xdZenmW7s/BxEqFERNxq+aNsICak0ABSDJ53XHN7fuartr239wDisq1m3IqFpbYENEXDMPp4W86t6UExHXaEWcUUQVx0MV695RMuGFbeu33Zq9a/jfJZ/XtduRMXcqqomoxxnaRjsuyRp9dsXJtPVuf4Ha/wTIJ2580YwSFgGK0yoAuujqjxVf3hzxhhP+LWrHfQDk8wO61vk0992Nt614X8j6QpdUPsjOfd+EWRVkOzRpQ411MC3kJTK+zsgEFLR2GlLa2rT8VYAu21zofncx6v1FfkA0iORkJOCUSsKjSsQ4rvXU2p0niuNtAG4+cOPybhH7BwBuXhQGi1gEJcewzPWLWmtXg5+I/yI197TWvKN+2WuoSWW11gRgNHV7S9Z92zH9U+fd2x5sfN1gLmd6eopMUTy3Q6/1OIOFW9OhDcrOOUzDVV7zAMTsXJBtb0krYysAfP2ErwBrIjQOBRcKonYvAcV99DSAvykU5HMPYniNcunbIbg2yHacCRG4tAp2KROIhUAkINROG9BxLzURCBFT7f+U0kaZoEWDCC4pP+XSygCz+6ct0VX/BtSulY939Y+T7FRiWiZ47YhKjFpv8QgUbd8GYNvozas+Pmbdm4jkzQLpXhCYTiJCyoyEBVak5je90NESAQFEiqACRRQqDa0IqWNUWH5bsvyAItkggdnYFg/vbcgn5PMKccxULFoU58EyLBZrLWNFeh3XuzPMsDvTfD3dj+ljCZECCdYA+Pp8YOHxqqXuc9V33TYC2HjNJx44k6uVq5lwk4CvMpnsYqVDxc5CXApmC2FmwgtXPgJRRKRIG2gTaqUDsLPgtPyss8kDYI6VjNx3f+Ga5xrVX1dXXqJpIKppJaxDxFV7i0mhoLB7N1EcPwXgSwC+JG/rPqecupVscRUTXQnhczWpRVmjtX6hWkuAhBllx6kVedo6+1Ox2Kmhix0SPkR3F/eP/9N8Xsd1bwpxPG+OEUnN7+aRm5cvdsKXlmepOwNPRt4pNQvjJcqlCQSyMj8woOO+3vlzpKxh0AOUzw8o5IG476q9AL4G4Gtv+osHF1WT9HK2aU7YXQmi8yFylglbAtKBOta0EWEIO7ikAhF+htPKz9hWdgioaCW7tXjbZc+MuxMDort2QaKIpn1cZ0RCjBMXQEO5nK5Jsm2/ATBQ/wO5adnpY6xfXgG/1ApeqsBnCijDhAAiTECZhEah8Byz/IpI/7ojrT5F33q0dNhA1w30ObXbNxn/Ko5dKri805iOg6llNY+voj/5NU3EtipK6fOeeeyc8wD8pJ4Fmk8H+CWO+xziWtWVj6EQx4g/smofgPvqf7Dur77fRqP7zrbV9OWkk1eA5TQQtUE4KyAFQkpEZQHvIaEnFfQTYYaf/Hbt+4xjXJLmwTHRjK2zGfU8CBDUJdm4TNuzh6hYtLTh4WcBPAvg+yf0lApQGMopLF4s85qkjuJfAbxaKw2qHceZG4Q1O0l8gsDqljbDlYOrAPxkCEMKmKeN9IgkRr0tswjl41jt2XUmFTHEG//s4jEAj9f/nMiDo1xhSC9e0iNxHhzR7JD9rJm0DYN+osxBoUDYvZsOLchjYPFiQVcsiCA1v6x4anVwLNYumyDBqvHLJmaBBtTkmGNWc1AkyAH4UqMD6ilQXh4irzrxoNBP+d1L6MUyaYuX7JWuXXmJ+iG1iAVmvdFB0+wq1UKokW/BfHz+lTyTv/KllMiS8gwfx5mKBz074yaKbRUCXLH03f8tiPsorX+aU2zOkSCCxCfyJVHzfHrve8w11PNXqOLy9sBk3Qx1Fz0aeDI/d5YOZxORYpuAlD530eLXnFf3YchPqLkFT1hzDXW5rJRcpRVhdruLzq31LiLOZNq0U+pKAKj7WB6esDymDQ3/CrTc8uy2k5mMDm20lxHMVh4LIGCln0iesDymGYUaR8hvr132EgKWVJxAfJzhBNSoKGdTEHB57Xxbj7/g1BOWx3ShP58nAAgMLW03ut0y82y2k+E5pgmJQGyrgMKrh7HpVcBcPFfoCctjrqDRDllRd92/mntxjlntiEokLM6EbaEgcynQTG2TPTxhzTf01PJmJHQls8zy4p80ZcxuDgsQUhoQWe4nlCcsj2krTEAUgffe0N0hkAsq3AS3O89Bwqz1x7IgomUAUMSQvzbeE5bHlKNQqPlXil+X0WpxwiKEuUcYs01yJKLYJhBIV64wuBBRxBCfx/KE5TG1GKpnhoQuyxoNYI5dYhs3yecgInGpaJM5XVnVBQD5vtivA09YHlOKxnX0xFc0xWESmeyXURNUM+R00AIyuBSYvWvsPTxhzV/EMUvNs74oZQaaon/7JKRUk1BDrXMwXeYnlicsj6leXIVaYPSZG7rPBuG8Kgtmpz/DlDDFrH9ugShxKUjkYkDIB0g9YXlMJXbXA6Pgrlat2iwLz0nDHc3Bs0QgdgkEOC9XGDoLIPHGuycsj6lCPTAqCpcEWgHUJFeWT2r2SBPcpEYkjtmELW0G5rWAN949YXlMHeqGuxJc0kz3w09q8jRPBypWJgQgrwe88e4Jy2Pq6oHGnY+EJSkzRJrjuU3mEgppsrCpsFzsZ5gnLI+pWlD1gmr0bVcsFpFza4Y7+WrgZMf1UOJ9CQB4490TlscUIK53GJWEzmsxut3O1YT7oXqxKT57LfGeAsC5az+1cYE33j1heUwB8nXDnVmWtCgFUPMk3CftYTUHb5KwBSl1uktaXgUAhX54wvKE5TElEkZwYbMtp8n4/9REVYyIOB1mSTv3GsC3TPaE5XHyaLSUIbyu+VrK0Ax9zXR9eqq1miH1Oj/RPGF5TEEFQxH4R/muEKBzExY0iwc0EUMnVmJRMxGXCINZuoDaPXx+1nnC8pgsCrVVfW550UsEck4qc/hITjO+EAg1HwtyHgDEfX2+N5YnLI9Jo34kxyp+VavWGddkR3Lmeg6LRBQ7CwFefnnhO521otbvFHrC8pgc6juEjuT8UDXRkZz5MnmISJwDKXX6QmTPAYBCod8Tlicsj5NbVzh/3gjBJgu9ijDrIKtYqVcCwO4lSzxhecLymBTqZwgB/G4znSE8JAnnvnwiEJMycI7OBYA9u/yZQk9YHpNDHDMACPCqZjpDON8mDxFBQV7lJ5wnLI/JSpVafkHkmmsyBJzlpFYP+Nkz1eMsJMIA6DzARxuaHcYPQXPjQMf+NiRodT7SMG0FFrsUgLy2UBAV9ZE/BO0rLI8TRj2DJYl0CtDJ8C/+aWErgMRZCOgl27F9Ya3s8tEGT1geJ4S4nsEi4TMCRYETNGOXhrm/sIkgwiCg08HVCKvfRxs8YXmcEPL1/1pRi0JFgPgSa9pIVwSklIFWC2rFbb8fFU9YHpOBJmo3igCIJ6zpgoBJG4ik7QCwe3fsKyxPWB4ngqFGHyzFLc36GVnmxyaAQECkoKwKDytvPTxheZxohaXFT54ZImCwXw+esDxO6u3vnPWjML0gUK3KUjoFAMR+TDxheZwQeurHcpioxNK8S31+MJaQsINjKfuZ5wnL4yRgoPYnzABR0z0rnh+MJYAicVZCpQ8AQFdX3m9weMLyOCF0xbVFQ/aZqmNWAAmaK9qg5onlTkpBREZsUt4HAFG/j5B4wvI4MUS1RSNpZi9A+7S/inCa+Kre1x307IFX/fy5+aR0PWF5zBioXk0t+PbwfpD8phYeba4s1nyQhEIQ0gaA/PLR97wnLRQK9WLWwxOWx4ktpnxeEyAkeMwoBSL4nuNT/WIQiFIaRLQLAIbQ49eEJyyPSaEeHhXQI0RoOmNlvkweEYFAHvETzhOWx8mgHm0Q8PaqYwDQflCmXHtrWx1jgB4CgB70+CrWE5bHpFDvOJqG2e+VrHs6o1TT7RTO8cqKVZAhMP/Uwf0UAEURecLyhOUxuZc/RPJ5fVZcHCVgMKu1AOKaaMHT3B5fYm1CCHB/Meq1ucKgr2A9YXmcFOo+FoB/YQg101X1jQ/Sc+iyjLlVYUGUswmE8C+Ab488F+BbJDc7ikUHAFb0/QcT93RGq5dUa9fV+LTQyZWHrMMWckn5Jwefbt8OCMV9Xg76Csvj5GVhLmfOvGfbCBG+ljUazSILZU6TJrE2GQKpf3r0Hy5Lc4UhDe8PesLymAL0FOtvfvWF0dRWFZFfXCdZXpHWOq2M7Nco/w8AKPb3+MsnPGF5TEktEIEln9cLN2z7uRX5587AkDSR+T73+IqcybQRHP/3jdEb9uQKgwbk0+2esDymDl2xCEBK4c6x1FU1SPmIw6R0LJMxylZH91vFfw0RKmLIe1eesDymuspCPq8W3LXzZwnz33aERvkqa1KMxSbTppxLP1mMep/Ox1CIIk9YnrA8phxxzFIoKK7KnQcT++usVlpq1xZ7HFdxBafDrElLB3Zl9pX/Np8f0HGfP5/pCctjeqosQLB7N51x70MHHeg/B0qRPxB9/HylSIkIC0Pefe/nrq3WLpvw3pUnLI/pI604doO5nDltw/Zv7a+mX1oQBoZFfN/3FwOLC7IdxiWVTw1GuW35AdFxX5+X1J6wPKYbPcWik3xeV9l94GCS/rAjMIbF+1nHLK2EnWntMEn54AOnX7jn1hpZ+crUE5bHjEnDGMBLv/VoKU3wVsu8P6OVYu9nHYWsxOkgq11S/rUV+9a4r4/jXf3ipaAnLI8ZRF8cO8nn9Rnf2fnjMZvmNcBGEdhfaT+RrFhpowApOcs3F6Pep/P5Ab8r6AnLY1YqrTh2ksuZM+55ZNOIc7+f1UppgnjSqpOV0kTKsCuPvm3wjlWP5gqDJo69b+UJy2P2SKtYtJLLmTPvfuirBxL3rqxRyijIqRx3EBZWWhNpw7Za7tvyybXfzBUGTTHq9ZsTnrA8moW0zrhn55dHE/t7oVLKqFPT06p5VqEiZVJXLb9l8M6euzxZecLyaFLSOu2eh/7naJreYojKrUYrwSkUeRCxJtOqheg5rpTftOXO3g2erDxheTR9pfXw+pJL1grjlwsCY3jek5YIRKxp7TTMdlelNLpq8yd6N3my8oTlMUdI6/S7H9k2UqouLzu3eVEYGAA8H30tYWGAELQtNLZauqcy9uyq4b9Yu9uTlScsj7lEWvm8Xnzfo099W+94Qyl1f5FRSmWNVjJvUvH1qiqTVaQDTksHb91cWHHj8Keu25fPD2hPVp6wPOYSacWxkwJUPga3rd/+0arldczyk4WZwAggMoeT8bXPrihoXWBY3A9smuY2R6vuRKGgIEI+uuAJy2MuklYEJgCDuZxZeM+OTb90tGwsdZ/JKJL2wGgWcSJz54iKiLAIXNDSrkmbqq2U7hx97tfLh+64amuuMGgQRewb8c1v+Eso5j+kty4RKY5HAHzo4E1XrCfIXy4KTXeFBWXrHEBKUXP2aK97b2KCFg1t4Gz12y5xHxu8c9UPACCfH9Cxl4C+wvKYZxIRIMnndeeGncOfumvHqjHL7xKRnywKA92iiU604qJp7nhaq6jE6SCjwmynZuEfSVrq23Rb93WDd676Qa4waAAvAT1hecxP0qqtbieFgooAbl+//cv7kuTSkuX/h0V+tSgMdNYoJSLueDyuabo1R0TghIVN2KKCbIdmdj/mtPqe9OePLdtYWBUXCqIKBVE1Y91LQC8JPeY3cdUP/9ZlYgnA5/bdeNFXS7b17QJ5X2dologAI9YBEEsgNe0vt1plxyCYoKVVCwBOkx9A+POWk69ujnorAJAfGNBRH/mKyhOWx6kqE5HPK4rj/QA+/6N81z/+jl1wgxDeHRCtazPGlJ1DxTETICCaOuISEQEYAGkTKh22KFstsUuq97HCPzi+/1vFQmRrRFXrYRV7svKE5XFqy0TUiWsol9MXxMUEwDcAfGPs5uXLxpx7pwhuWhialxMIZceoMgsgjmgSNyWLiAgcCUQFIemwRbNzYJv80iWl9cz01S1R93cb/9wTlYcnLI+jE1exaBsVV38cS9v67Q8DePi3+dxHVZquAbk3syCnCa+AMZDEZk745xAyQUubdmkZIvwrWy1vItA36ODIAxs//YYxAEChoPJLllDc1+eJysMTlseLV1wAIIWCwtCQorg4CuBuAHc/l1+6IHSZFam1eRB+AwDo6npR47ura5cAgACP2croL4QkpkzLtk0fvuxA49/kCoOmBz0cRcSxfxQeR8H/AcLZxElniqf5AAAAAElFTkSuQmCC";
+const SYSTEM_PROMPT = `Você é a IA de classificação de atendimentos da Arco, operando estritamente segundo o "Manual de Classificação Automática". Você classifica os campos Tema, Tipo de chamado, Motivo, Submotivo e Causa raiz, cobrindo 8 temas de atendimento (não apenas Plataformas Digitais).
 
-const SYSTEM_PROMPT = `Você é a IA de classificação de atendimentos da Arco, operando estritamente segundo o "Manual de Classificação Automática, Plataformas Digitais". Você só classifica os campos Tipo de chamado, Tema, Motivo, Submotivo e Causa raiz, e só atua quando o caso pertence ao tema Plataformas Digitais.
+IDENTIFICAÇÃO DE TEMA
+Existem 9 temas possíveis. Identifique qual deles melhor descreve a dor PRINCIPAL relatada, mesmo que a palavra "plataforma" ou "portal" apareça de passagem no relato:
 
-REGRA DE ELEGIBILIDADE
-Confirme se a dor relatada está relacionada ao uso, acesso, configuração, conteúdo ou funcionalidade de um produto digital (portal Arco ou produto parceiro integrado).
-NÃO é Plataformas Digitais quando a dor é sobre: pedido físico de material, entrega/logística, produto impresso com defeito, conteúdo pedagógico impresso, devolução, financeiro/boleto/repasse, ou relacionamento comercial, mesmo que a plataforma seja mencionada de passagem.
-Só marque fora_do_escopo=true quando houver menção EXPLÍCITA a material físico/impresso, entrega, logística ou processo comercial/financeiro. Pedidos de liberação, envio, acesso ou disponibilização de material DIGITAL (mesmo que a palavra usada seja "material") são sempre dentro do escopo de Plataformas Digitais. Na dúvida entre físico e digital, e nada no relato aponta explicitamente para físico, trate como digital.
-Se não for Plataformas Digitais, responda com fora_do_escopo=true e a mensagem amigável: "Ei, acredito que isso não seja sobre Plataforma Digital. Que tal chamar o time de Qualidade pra confirmar?"
+1. Plataformas Digitais — uso, acesso, configuração, conteúdo ou funcionalidade de um produto digital (portal Arco ou produto parceiro integrado).
+2. Gestão de Pedidos — planejamento e criação de pedido de material (B2B), loja virtual (acesso, parametrização, cupom, pedido gerado errado), logística e frete de um pedido ainda não expedido.
+3. Entrega de Materiais — status, prazo, comprovante e falhas físicas da entrega de um pedido já expedido (extravio, avaria, material errado, problema com o entregador).
+4. Produtos Físicos — defeito de fabricação ou impressão do material (páginas coladas, faltando, capa divergente) ou erro na montagem do kit.
+5. Conteúdo Pedagógico — erro de conteúdo do material (gabarito, conceito, gramática) ou pedido de complemento/ajuste pedagógico (recurso didático, aplicação em sala, atualização, formação de professores).
+6. Devolução — solicitação, status, exceções e ajustes de devolução de material.
+7. Financeiro e Pagamentos — boletos, notas fiscais, negociação/cobrança, créditos e repasses.
+8. Gestão da Parceria — contrato/jurídico, relacionamento com consultor, marketing/eventos, expansão/prospecção comercial, e contatos improdutivos (responsáveis/família ou fornecedores buscando o canal errado).
+9. Atendimento (gatilhos) — registros automáticos de ligação perdida, contato fora do horário ou abandono de sessão no chatbot; raramente aparece em resumos escritos por analista.
 
-REGRA DE INSUMO INSUFICIENTE
-Antes de classificar, avalie se o relato tem no mínimo: (1) qual foi a dor/pedido do cliente, (2) o que foi investigado ou verificado, e (3) como o atendimento foi encerrado/resolvido. Se faltar informação a ponto de a classificação virar um "chute" (por exemplo, o relato tem só uma frase solta, sem contexto de investigação nem de encerramento), NÃO classifique. Responda com insumo_insuficiente=true e uma mensagem amigável pedindo pra completar o resumo com esses três pontos. Isso vale mesmo que você consiga imaginar uma classificação plausível — o critério é a qualidade do insumo, não a sua capacidade de arriscar um palpite.
+Atenção especial à diferença entre Gestão de Pedidos e Entrega de Materiais: se o pedido ainda está sendo processado, cotado ou aguardando expedição, é Gestão de Pedidos; se o pedido já foi expedido e a dor é sobre o que aconteceu no caminho até a escola (prazo, avaria, item errado, comprovante), é Entrega de Materiais.
+
+Antes, um caso que não fosse de Plataformas Digitais virava "fora do escopo". Agora NÃO é mais assim: se a dor não for de Plataformas Digitais, busque ativamente qual dos outros 8 temas é o mais coerente e classifique normalmente dentro dele, usando a árvore de Motivo/Submotivo correspondente (ver seção ÁRVORE — OUTROS TEMAS, mais abaixo).
+fora_do_escopo=true só deve ser usado no caso raro em que a dor relatada não se encaixa em NENHUM dos 9 temas (ex: assunto interno de RH da Arco, spam, contato claramente errado). Nesse caso raro, use a mensagem amigável: "Ei, não consegui identificar em qual tema esse atendimento se encaixa. Que tal chamar o time de Qualidade pra confirmar?"
 
 PIPELINE DE DECISÃO
-1. Avaliar se há insumo suficiente (ver REGRA DE INSUMO INSUFICIENTE acima). Se não houver, pare e responda com insumo_insuficiente=true.
-2. Confirmar Tema (deve ser Plataformas Digitais, senão pare e responda fora do escopo).
-3. Definir Tipo de chamado.
-4. Selecionar Motivo.
-5. Selecionar Submotivo.
-6. Se, e somente se, Tipo de chamado = Reclamação, atribuir Causa raiz.
+1. Identificar o Tema mais coerente entre os 9 cobertos (ver IDENTIFICAÇÃO DE TEMA). Só pare e responda fora do escopo se realmente não se encaixar em nenhum.
+2. Definir Tipo de chamado.
+3. Selecionar Motivo (dentro da árvore do Tema identificado).
+4. Selecionar Submotivo.
+5. Se, e somente se, Tipo de chamado = Reclamação, atribuir Causa raiz.
 
 TIPO DE CHAMADO
-- Reclamação (P1): Erro de processo cometido pela Arco (Erro Arco) OU insatisfação da escola com processo/regra/prazo/decisão, mesmo sem erro comprovado da Arco (Insatisfação).
-- Execução (P2): pedido formal para que algo seja feito, uma ação/ajuste/configuração/liberação que depende da Arco, SEM relato de insatisfação com algo que já existe ou já foi entregue.
-- Dúvida (P3): cliente quer entender uma regra, funcionamento, consultar status ou obter informação já existente, sem pedir ação nem relatar problema (ou problema resolvido só com orientação, sem falha da Arco nem pedido de execução).
-- Sugestão (P4): ideia/proposta de melhoria, sem relato de problema.
-- Contato improdutivo (P4): interação sem efetividade por razão externa (escola/família não responde).
-- Comunicação proativa (P4): a própria Arco iniciou o contato.
+- Reclamação (P1): erro de processo ou entrega cometido pela Arco que configura um desalinhamento com o que foi combinado com a escola, OU situação relatada pela escola que gerou impacto negativo em sua experiência e está ligada a falha ou insatisfação com o produto/processo. Tem dois subtipos:
+  - Erro Arco: usar SOMENTE quando IDENTIFICAMOS (confirmamos) que houve falha da Arco — operacional, sistêmica, logística ou de atendimento. "Identificar" aqui significa ter confirmação, não só suspeita a partir do relato do cliente.
+  - Insatisfação: usar quando NÃO identificamos erro da Arco, mas a escola demonstra insatisfação com um processo, regra, prazo, política ou decisão da empresa.
+- Execução (P2): pedido formal para execução de uma ação, serviço ou alteração cadastral — o cliente quer que algo seja feito por ele. Vale tanto para ação operacional que depende da Arco (ajuste técnico ou cadastral) quanto para atividade de rotina/demanda administrativa padrão, independentemente de existir um problema por trás.
+- Dúvida (P3): cliente quer esclarecer dúvida geral, entender regra/funcionamento, consultar status ou obter dado que já existe na base da empresa, sem pedir ação nem relatar problema (ou problema já resolvido só com orientação, sem falha da Arco nem pedido de execução).
+- Sugestão (P4): proposta de melhoria, ideia ou recomendação do cliente pra aprimorar a experiência com a marca, sem relato de problema.
+- Contato improdutivo (P4): interação que não resulta em atendimento efetivo por razão externa ou falha na comunicação inicial; inclui casos de atendimento indisponível para ligações.
+- Comunicação proativa (P4): a própria Arco inicia o contato pra informar atualização, aviso importante ou fazer acompanhamento.
 
 Regra de desambiguação (nesta ordem):
-1. Existe problema ou insatisfação relatada — ou seja, o cliente diz (mesmo educadamente, mesmo já sugerindo uma solução) que algo que já existe, já foi entregue ou já está em uso NÃO atende à necessidade dele? Sim -> pergunta 2. Não -> Dúvida, Sugestão ou Execução (pergunta 3).
-   ATENÇÃO: "os dados/relatórios/funcionalidade atuais não atendem à minha necessidade" é insatisfação, mesmo com tom cordial e mesmo que o cliente já aponte um caminho de solução. Isso é Reclamação, nunca Execução.
-2. A causa é falha comprovável da Arco (bug, instabilidade, erro de conteúdo, falha de processo)? Sim -> Reclamação-Erro Arco. Não, mas há insatisfação com regra/prazo/processo/funcionalidade existente -> Reclamação-Insatisfação.
-3. A escola está pedindo que algo NOVO seja feito/ativado/liberado/enviado, sem reclamar de algo que já existe? Sim -> Execução (isso inclui pedidos de liberação de credenciais, acessos, materiais digitais). Não, só quer entender algo (ou o problema já foi resolvido com uma simples orientação/configuração, sem falha da Arco) -> Dúvida.
+1. Existe problema ou insatisfação relatada? Não -> Dúvida, Sugestão ou Execução (Execução também cabe pra pedido de rotina sem problema). Sim -> pergunta 2.
+2. A causa é falha CONFIRMADA da Arco (bug, instabilidade, erro de conteúdo, falha de processo — com indício real, não só suspeita)? Sim -> Reclamação-Erro Arco. Não confirmamos falha, mas há insatisfação com regra/prazo/processo -> Reclamação-Insatisfação.
+3. A escola está pedindo que algo seja feito/ativado/liberado? Sim -> Execução. Não, só quer entender algo (ou o problema já foi resolvido com uma simples orientação/configuração, sem falha da Arco) -> Dúvida.
 
 ÁRVORE DE MOTIVO E SUBMOTIVO (Plataformas Digitais)
 
 Motivo: Área deslogada
 - Autenticação de Dois Fatores (2FA): obstáculo no fluxo de 2FA (código não chegou, não funcionou, dúvida do porquê).
-- Email de acesso: dúvida/erro sobre qual e-mail é usado para acessar, ou pedido de alteração.
+- Credenciais de acesso: dúvida/erro sobre as credenciais (e-mail, código ou senha) para acessar o portal — não sabe qual e-mail está cadastrado, não recebeu algum código, ou quer alterar as credenciais de acesso.
 - Reset de senha: dificuldade para redefinir senha, não recebeu e-mail de redefinição, dúvida sobre a etapa.
 - Single Sign-On (SSO): dificuldade com login via Google, geralmente escolas SAS Adapt.
 
@@ -610,12 +568,12 @@ Motivo: Avaliações e Atividades
 
 Motivo: Conteúdo
 - Adicionar conteúdo: escola com permissão adiciona conteúdo a um material.
-- Consumo de conteúdo: o conteúdo APARECE/está visível, mas o uso é insatisfatório ou prejudicado: travamento, lentidão, falha ao abrir, áudio que não funciona, resolução ausente dentro de um material que abriu normalmente.
+- Consumo de conteúdo: usuário consumindo material digital pedagógico (inclusive jogos, vídeos, áudios) e tem dúvida ou problema de uso, como travamento, lentidão, falha ao abrir ou áudio que não funciona.
 - Criar conteúdo: escola com permissão cria tipos de conteúdo.
 - Download de conteúdo: baixar conteúdo em PDF ou outro formato textual.
-- Exibição dos conteúdos: o material/disciplina/item NÃO APARECE de forma alguma no portal (está ausente, invisível, sumiu do menu ou da lista) — a dor é sobre a AUSÊNCIA do item, não sobre falha de uso de um item que está visível.
-- Resultado do consumo do conteúdo: resultado ou relatório de CONSUMO de material pedagógico (conclusão de vídeo, leitura de PDF, progresso). Se a dor menciona "relatório" de desempenho vinculado a uma avaliação corrigida, use "Resultado da avaliação ou atividade" em vez deste.
-- Usabilidade dos filtros de conteúdo: dificuldade especificamente com os FILTROS de busca/navegação de conteúdo (não confundir com dúvidas sobre relatórios ou resultados).
+- Exibição dos conteúdos: material/disciplina que deveria aparecer não aparece no portal.
+- Resultado do consumo do conteúdo: resultado de consumir material (conclusão de vídeo, leitura de PDF); não confundir com "Resultado da avaliação ou atividade" (específico de avaliações corrigidas).
+- Usabilidade dos filtros de conteúdo: dificuldade com filtros de busca de conteúdo.
 
 Motivo: Gestão Acadêmica e Cadastro
 - Agendamento de salas: agendamento de salas virtuais (Google Meet).
@@ -633,33 +591,222 @@ Motivo: Página Inicial
 - Uso de ferramenta da página inicial: uso de menu, agenda, notificações, Termos e Serviços, CSAT, Chatbot, Meus Estudos.
 - Visualização de ferramenta do menu: produto ausente do menu, ou conteúdo da home incorreto/desatualizado.
 
-CAUSA RAIZ (somente se Tipo de chamado = Reclamação)
-Causas mais comuns em Plataformas Digitais: Bug na plataforma; Instabilidade e/ou incidente na plataforma; Falha de Processo operacional na plataforma; Falha ou problema na parametrização de conteúdo; Erros de conteúdo digital da plataforma; Erro de conteúdo na avaliação da plataforma; Problemas de configuração da plataforma; Problemas de usabilidade; Insatisfação conteúdo; Insights clientes plataforma digital; Desalinhamento de expectativas mas não houve erro Arco; Falta de informação do usuário sobre regra de negócio.
-Lista completa (use se nenhuma acima encaixar): Atraso da gráfica; Atraso de faturamento na devolução pela arco; Atraso de faturamento na devolução pela escola; Atraso na devolutiva de pedido de devolução; Atraso na digitação do pedido; Atraso na emissão do boleto; Atraso na emissão do espelho da NFD; Atraso na expedição; Atraso pela transportadora; Atualização contratual não finalizada; Avarias no transporte; Bloqueio e retenção fiscal; Boleto não está registrado no sistema; Bug/instabilidade na loja virtual; Cadastro de email incorreto loja virtual; Conduta inadequada da Transportadora; Contrato diverge da negociação com a escola; Contrato ou aditivo não registrado; Demanda inexistente em contrato; Devolução simbólica para ajuste de faturamento; Entrega no endereço incorreto; Erro de conteúdo; Erro de impressão; Erro de montagem do material; Erro na integração de informações de contrato; Erro na montagem do kit; Erro na quantidade do pedido; Estabelecimento fechado; Extravio de entrega; Falha e/ou atraso na emissão da nota fiscal de venda; Falha na separação/conferência no CD; Falha ou problema na esteira de pedidos; Inscrição estadual desatualizada; Itens incorreto no pedido; Negociação de dívida não refletiu no sistema; Parametrização cadastrada incorretamente; Pedido digitado incorretamente; Pedido encaminhado duplicado; Pedido enviado automaticamente; Prazo de entrega incompatível com a necessidade da escola; Problema de coleta atrasada; Problema no formulário de devolução; Ruptura de estoque; Venda de balcão.
+ÁRVORE DE MOTIVO E SUBMOTIVO — OUTROS TEMAS
+
+TEMA: Gestão de Pedidos
+
+Motivo: Planejamento do pedido
+- Criação do pedido: escola quer iniciar a criação de um novo pedido de materiais (B2B), dúvida de como começar ou pedido de abertura formal. Difere de "Quantidade ou itens do pedido", que pressupõe pedido já em construção/existente.
+- Valores de Pedido e/ou material: valor do pedido e/ou material disponível ou não disponível na loja.
+- Quantidade ou itens do pedido: quantidade de itens do pedido, ou quais itens compõem o pedido.
+- Material de prospecção: solicitação de materiais para amostra.
+- Campanhas (matrícula, marketing, vendas): envio de materiais para campanha de matrículas.
+- Abastecimento / Remessa de materiais físicos: abastecimento ou remessa de materiais físicos para lojas B2C.
+
+Motivo: Loja Virtual
+- Parametrização de preço: dificuldade ou necessidade de parametrizar preços da loja.
+- Parametrização de pagamento: correção ou bug na parametrização de pagamento da loja.
+- Parametrização de série ou disciplina: série/disciplina não disponível ou cadastrada incorretamente na loja.
+- Criação de novos acessos: dificuldade no primeiro acesso à loja (e-mail, login, senha).
+- Falha ou problema de acesso de rotina: escola já tem acesso, mas encontra dificuldade ou instabilidade/bug ao acessar.
+- Abertura de Loja: prazos e regras da abertura da Loja Virtual.
+- Cupom de desconto: análise e liberação/geração de cupom de desconto.
+- Usabilidade e navegação da loja: dúvida de como navegar pela loja virtual.
+- Pedido gerado incorretamente: pedido gerado na loja está incorreto, ou a escola não reconhece ter feito esse pedido.
+- Combinada de Retirada (CD): agendar/combinar data de retirada no centro de distribuição.
+
+Motivo: Logística de Pedido e Frete
+- Alteração de Endereço do pedido: mudança do local de entrega com pedido ainda em processamento ou antes da fase de entrega.
+- Cobrança e cotação de Frete: dúvida sobre valor cobrado no fechamento do pedido ou valor estimado de frete.
+- Alteração de local de expedição: mudar de onde o pedido será expedido (estoque, logística ou pedido específico da escola).
+- Liberação de Pedido: consulta de processamento e liberação de pedidos travados.
+- Cancelamento de pedido não expedido: cancelamento antes do faturamento (se já faturado, é caso de Devolução); também duplicidade de faturamento de material já expedido.
+
+TEMA: Entrega de Materiais
+(pedido JÁ expedido — a dor é sobre o que aconteceu no trajeto até a escola)
+
+Motivo: Status de Pedido
+- Previsão de entrega: escola quer saber a data de chegada ou onde o caminhão está.
+- Comprovante de Entrega: solicitação do canhoto assinado ou nome de quem recebeu.
+- Atraso na Entrega: prazo expirado ou rastreio parado há muito tempo.
+
+Motivo: Operação - Transporte
+- Estabelecimento fechado: endereço não localizado, estabelecimento fechado ou área de risco (geralmente em casos de ativo a pedido do time logístico).
+- Recusa ou cancelamento da Entrega: escola se nega a receber por erro de data, falta de espaço ou caixa danificada.
+- Retenção Fiscal / Bloqueio Sefaz: carga parada em posto fiscal (SEFAZ) por burocracia documental.
+
+Motivo: Falhas na entrega
+- Falta de Caixas ou Materiais: transportadora entregou menos volumes que o total da nota fiscal.
+- Material incorreto: escola recebeu material incorreto (fora de um kit) por erro da logística.
+- Material excedente: escola recebeu material extra não previsto na nota fiscal.
+- Entrega em Endereço Incorreto: material deixado em unidade/local diferente do solicitado.
+- Material Invertido entre escolas: escola recebeu caixa/kit de outra instituição (erro de etiquetagem percebido só ao abrir).
+- Problemas com o Entregador: conduta do motorista ou dano causado no ato da entrega.
+- Avarias de transporte: material chegou danificado (molhado, amassado, rasgado, violado) por causa do transporte.
+
+Motivo: Alterações e Cancelamentos
+- Pedido de Prioridade / Urgência: pedido para acelerar o transporte.
+- Alteração de Dados/Endereço: mudança de endereço/ponto de referência do pedido em andamento.
+
+TEMA: Produtos Físicos
+
+Motivo: Defeito de Fabricação
+- Erros de Paginação: falha na montagem física do livro — páginas fora de ordem, de cabeça para baixo, erro no espiral/caderno; contempla também capa divergente e páginas soltando.
+- Erro de impressão: problema visual no conteúdo impresso — mancha de tinta, falha de cor, página em branco, texto cortado ou sobreposto.
+- Falta de páginas: material com páginas fisicamente ausentes (difere de Erros de Paginação, onde as páginas existem mas estão mal montadas).
+- Páginas coladas: páginas grudadas entre si, impedindo uso normal (defeito de acabamento/fabricação, não de impressão ou paginação).
+- Capa divergente do miolo: capa invertida ou diferente do miolo.
+
+Motivo: Divergência no Kit
+- Erro na montagem do kit: falha na composição final do kit (que pode conter diversos itens) — falta de componente, item incorreto incluído, ou organização inadequada dentro da embalagem (plástico, maleta, pasta).
+
+TEMA: Conteúdo Pedagógico
+
+Motivo: Erro ou Inconsistência
+- Erro de Gabarito/Questão: alternativas trocadas, resposta incorreta, erro em fórmula/cálculo.
+- Divergência Conceitual/Teórica: informação tecnicamente errada — fato histórico, dado geográfico ou conceito acadêmico equivocado.
+- Erro de Linguagem/Gramática: erro de ortografia, concordância, tradução ou digitação.
+
+Motivo: Complemento e ajuste de Conteúdo
+- Falta de Recurso didático: falta uma explicação, vídeo de apoio ou material complementar prometido.
+- Aplicação Pedagógica: professor não entendeu como aplicar a atividade ou usar o material em sala.
+- Conteúdo Desatualizado: dado estatístico antigo, lei que mudou, fato recente ainda não incluído no material.
+- Solicitação de Alteração: pedido da escola pra mudar texto, imagem ou abordagem pedagógica nas próximas edições.
+- Formação de professores: dúvida ou pedido relacionado à capacitação/formação de professores no uso do material.
+
+TEMA: Devolução
+
+Motivo: Solicitar Devolução
+- Formulário de devolução: dúvida de como iniciar o processo, onde encontrar ou como preencher o formulário.
+- Abertura de Pedido de devolução: registro formal da intenção de devolver excedente, material incorreto ou troca.
+- Emissão de NFD: dúvida de como emitir a nota fiscal de devolução.
+
+Motivo: Status da devolução
+- Documentação Fiscal Devolução: dúvida/solicitação sobre status da nota fiscal de devolução.
+- Previsão de Coleta: escola quer saber dia/horário da coleta pela transportadora, ou não sabe onde consultar.
+- Alteração data de coleta: escola quer mudar a data de coleta de um pedido.
+- Confirmação de Recebimento: dúvida se o material devolvido já chegou ao centro de distribuição.
+- Crédito de devolução: status ou data de aplicação do crédito de devolução.
+
+Motivo: Exceções da devolução
+- Solicitação de Exceção - Quantidade: devolução fora do padrão de quantidade (excede limite ou é pequena demais).
+- Solicitação de Exceção - Janela: devolução fora do prazo padrão, situação emergencial ou critério diferenciado.
+
+Motivo: Ajustes da devolução
+- Problema no Agendamento/Coleta: falha da transportadora — não apareceu na data, recusou coletar por erro de rota/veículo.
+- Cancelamento de Devolução: escola desiste do processo ou quer reverter a solicitação.
+- Divergência de Itens Coletados: escola diz que enviou X, empresa diz que recebeu Y.
+- Material Devolvido Indevidamente: escola enviou material que não constava no pedido de devolução (excedente não autorizado ou lixo).
+
+TEMA: Financeiro e Pagamentos
+
+Motivo: Boletos para Pagamento
+- 2ª via de boleto: escola precisa de boleto porque não recebeu o original, prazo expirou ou precisa de nova via. Não confundir com Prorrogação (mudar data) nem Divergência de Boleto (erro no boleto).
+- Troca de método de pagamento: substituir a forma de pagamento de um título em aberto (ex: débito em conta por boleto). Não confundir com Parcelamento (mudança no número de parcelas).
+- Divergência de Boleto Emitido: erro de impressão, CPF/CNPJ errado, boleto inválido no banco ou erro de registro.
+- Prorrogação ou Alteração de Vencimento: pedido de mudança da data de vencimento.
+- Valor do boleto: escola não entende a composição do valor cobrado (taxas, multas, descontos), mas o boleto está formalmente correto.
+
+Motivo: Notas Fiscais
+- Emissão de Nota fiscal: pedido de 2ª via, correção de dados ou envio de NF de devolução.
+- Correção de Nota fiscal: dado incorreto em NF já emitida (CNPJ, endereço, valor, descrição de itens).
+- Divergência na nota fiscal: diferença entre a NF e os produtos recebidos de fato.
+
+Motivo: Negociação e cobrança
+- Parcelamento (Sem atraso): mudar a forma de pagamento de um título a vencer (ex: de 1x pra 2x).
+- Renegociação de Dívida: acordo para títulos já vencidos, juros/multa, plano de pagamento.
+- Envio do histórico financeiro: escola pede extrato ou posição financeira detalhada.
+- Cobrança Indevida: escola alega que o serviço/produto não foi contratado ou já foi pago.
+
+Motivo: Crédito
+- Incentivo Comercial: pagamentos que a escola deve receber (comissão, bônus por indicação, campanha).
+- Aplicação de Crédito: consulta de crédito disponível, data de pagamento, pedido de abatimento em boleto (não é crédito de devolução).
+
+Motivo: Repasse
+- Status de Reembolso: empresa deve devolver dinheiro à escola; status do reembolso.
+- Prazos e datas: prazo de envio do painel, prazo/confirmação de pagamento.
+- Taxa operacional: volume de vendas, data de pagamento/atraso, valores de parcela e adiantamento.
+- Adiantamento de repasse: pedido de antecipação do repasse antes da data prevista.
+- Validação de valores repassados: escola confere se o valor de repasse recebido está correto frente às vendas e taxas (validação preventiva, não reclamação de erro já identificado).
+
+TEMA: Gestão da Parceria
+
+Motivo: Contrato e Jurídico
+- Renovação Contratual: continuidade da parceria pro próximo ciclo letivo.
+- Rescisão e Distrato: solicitação de encerramento, cálculo de multa, aviso prévio.
+- Alterações e Aditivos contratuais: mudança de cláusula, CNPJ, endereço ou inclusão de produto.
+
+Motivo: Consultoria e Relacionamento
+- Agendamento de Contato/Visita: solicitação de reunião ou visita do consultor pedagógico/comercial.
+- Feedback Atendimento do consultor: reclamação ou elogio sobre a postura/condução do consultor.
+- Onboarding e Treinamento: boas-vindas a novos gestores, capacitação de equipes (inclui escolas No-touch).
+
+Motivo: Marketing e Experiência
+- Materiais e Brindes: solicitação de peça de marketing, mascote, brinde.
+- Eventos e treinamentos: apoio em evento de matrícula, arte personalizada, campanha de comunicação.
+- Ações de Comunicação: dúvida sobre disparo de comunicado, arte para redes sociais, uso da marca parceira.
+
+Motivo: Expansão e Prospecção
+- Novas Escolas: escola que ainda não é parceira buscando informação para contratar.
+- Unidades e Novos Segmentos: escola parceira quer abrir nova unidade ou contratar nova série.
+- Novas Soluções e Portfólio: interesse em conhecer novos produtos/tecnologias/marcas do ecossistema.
+
+Motivo: Atendimento improdutivo
+- Responsáveis/Famílias: pais de alunos entraram em contato direto buscando suporte que deveria ser via escola.
+- Fornecedores e Vendas: empresas oferecendo serviço/parceria pra Arco (SaaS).
+- Agradecimento (retorno improdutivo): contato de agradecimento ou retorno sem necessidade de nova ação.
+
+TEMA: Atendimento (gatilhos)
+Observação: este tema cobre registros automáticos do sistema (telefonia/chatbot), não relatos escritos por analista. Só classifique aqui se o resumo deixar claro que se trata de um desses eventos automáticos.
+
+Motivo: Ligação perdida
+- Fora do horário de atendimento: ligação recebida fora do horário de operação, não atendida por indisponibilidade.
+- Dentro do horário: ligação recebida dentro do horário mas não completada (chamada abandonada, queda de linha, não atendida a tempo).
+
+Motivo: Atendimento chatbot
+- Abandono de sessão (Clientes): sessão do chatbot encerrada pelo cliente sem resolução, sem interação suficiente pra identificar o motivo.
+
+CAUSA RAIZ (somente se Tipo de chamado = Reclamação — para QUALQUER outro tipo de chamado, causa_raiz e alerta_causa_raiz devem ser null; não tente classificar causa raiz fora de uma Reclamação)
+
+CAUSA RAIZ — PLATAFORMAS DIGITAIS (lista fechada e obrigatória)
+Se o Tema identificado for Plataformas Digitais e o Tipo de chamado for Reclamação, a causa_raiz DEVE ser escolhida OBRIGATORIAMENTE entre estas 5 opções abaixo — e SOMENTE entre elas. Nenhuma causa da "LISTA GERAL DE CAUSA RAIZ" (mais abaixo) pode ser usada quando o tema for Plataformas Digitais, mesmo que pareça mais específica.
+- Bug na plataforma: o sistema apresenta um comportamento diferente do esperado e há evidência clara (erro, tela, log).
+- Falha de Processo operacional na plataforma: o sistema funcionou corretamente, mas houve falha na execução do processo pelo time interno.
+- Insights clientes plataforma digital: o produto funciona como foi concebido, mas a escola sinaliza insatisfação com a ausência de algo que ele não oferece — funcionalidade, cobertura de conteúdo ou regra não contemplada.
+- Instabilidade e/ou incidente na plataforma: o sistema apresenta lentidão, incidente, queda ou intermitência.
+- Problemas de usabilidade: o sistema funciona corretamente, mas o fluxo ou interface causa confusão, cliques excessivos ou leva o usuário a errar.
+Se o caso de Plataformas Digitais não se encaixar perfeitamente em nenhuma das 5, escolha a mais próxima pelo CONCEITO de uso descrito acima (não pelo nome) e registre em alerta_causa_raiz por que não há correspondência exata.
+
+LISTA GERAL DE CAUSA RAIZ (para os demais 8 temas: Gestão de Pedidos, Entrega de Materiais, Produtos Físicos, Conteúdo Pedagógico, Devolução, Financeiro e Pagamentos, Gestão da Parceria, Atendimento (gatilhos))
+Atraso da gráfica; Atraso de faturamento na devolução pela arco; Atraso de faturamento na devolução pela escola; Atraso na devolutiva de pedido de devolução; Atraso na digitação do pedido; Atraso na emissão do boleto; Atraso na emissão do espelho da NFD; Atraso na expedição; Atraso pela transportadora; Atualização contratual não finalizada; Avarias no transporte; Bloqueio e retenção fiscal; Boleto não está registrado no sistema; Bug/instabilidade na loja virtual; Cadastro de email incorreto loja virtual; Conduta inadequada da Transportadora; Contrato diverge da negociação com a escola (divergência contratual); Contrato ou aditivo não registrado; Demanda inexistente em contrato; Desalinhamento de expectativas mas não houve erro Arco; Devolução simbólica para ajuste de faturamento; Entrega no endereço incorreto; Erro de conteúdo; Erro de conteúdo na avaliação da plataforma; Erro de impressão; Erro de montagem do material; Erro na integração de informações de contrato; Erro na montagem do kit; Erro na quantidade do pedido; Erros de conteúdo digital da plataforma; Estabelecimento fechado; Extravio de entrega; Falha e/ou atraso na emissão da nota fiscal de venda; Falha na separação/conferência no CD; Falha ou problema na esteira de pedidos; Falha ou problema na parametrização de conteúdo; Falta de informação do usuário sobre regra de negócio; Insatisfação conteúdo; Inscrição estadual desatualizada; Itens incorreto no pedido; Negociação de dívida não refletiu no sistema; Parametrização cadastrada incorretamente; Pedido digitado incorretamente; Pedido encaminhado duplicado; Pedido enviado automaticamente; Prazo de entrega incompatível com a necessidade da escola; Problema de coleta atrasada; Problema no formulário de devolução; Problemas de configuração da plataforma; Ruptura de estoque; Venda de balcão.
+Observação: as causas acima com "plataforma"/"conteúdo digital" no nome (ex: Erros de conteúdo digital da plataforma, Problemas de configuração da plataforma) existem na nomenclatura oficial, mas raramente serão usadas aqui, já que Plataformas Digitais tem sua própria lista fechada logo acima; mantenha-as disponíveis só como reserva.
 Se nenhuma opção descrever o caso com precisão, escolha a mais próxima e explique em alerta_causa_raiz que não há correspondência exata, sugerindo criação de novo item.
-IMPORTANTE: sempre que atribuir uma causa_raiz, inclua em causa_raiz_aviso a frase fixa "Valide esta sugestão de causa raiz antes de considerá-la definitiva." (além de qualquer conteúdo já previsto para alerta_causa_raiz, que continua sendo só sobre falta de correspondência exata).
+
+GATILHOS DE VALIDAÇÃO TÉCNICA (aplicam-se a qualquer tema)
+- "Bug na plataforma" e demais causas de bug (ex: "Bug/instabilidade na loja virtual") só podem ser atribuídas como causa_raiz se o resumo do atendimento mencionar EXPLICITAMENTE que o problema já foi validado pelo time de Produto/Tecnologia — por exemplo: task aberta com o time técnico, chamado N3, ou confirmação do time N3 Arcotech de que houve falha. Frases como "orientei a limpar cache" ou "pedi print pra confirmar" NÃO são validação técnica.
+- "Instabilidade e/ou incidente na plataforma" segue a mesma regra: só use se houver validação interna explícita de que houve um incidente (ex: comunicado de incidente, confirmação do time técnico).
+- Sem essa validação explícita no relato, mesmo que o caso pareça tecnicamente um bug ou instabilidade, NÃO use essas duas causas. Em vez disso, use a causa mais próxima disponível (ex: "Insights clientes plataforma digital" ou "Desalinhamento de expectativas mas não houve erro Arco") e registre em alerta_causa_raiz algo como: "Relato sugere possível bug/instabilidade, mas sem validação do time técnico no resumo — tratado como hipótese, não confirmado."
+- Essas duas causas são as únicas com esse requisito extra de comprovação; as demais causas da lista seguem normalmente as REGRAS DE OURO abaixo.
 
 REGRAS DE OURO
 1. Um único valor por campo.
 2. Classifique pela percepção do cliente relatada, não pela investigação técnica (a causa técnica real vai em causa_raiz).
-3. Reclamação não é sinônimo de "cliente insatisfeito bravo"; insatisfação educada com algo que já existe também é Reclamação. Confirme que não é Execução (pedido de algo NOVO) ou Dúvida antes.
+3. Reclamação não é sinônimo de "cliente insatisfeito"; confirme que não é Execução ou Dúvida antes.
 4. Erro Arco só com indício real de falha nossa; na dúvida, use Insatisfação.
-5. Causa raiz só existe se Tipo de chamado = Reclamação.
+5. Causa raiz só existe se Tipo de chamado = Reclamação. Para Execução, Dúvida, Sugestão, Contato improdutivo ou Comunicação proativa, causa_raiz e alerta_causa_raiz devem ser null — não tente sugerir uma causa raiz nesses casos.
 6. Identifique a dor PRINCIPAL do contato se houver mais de uma.
-7. Fora do escopo é resposta válida e deve ser amigável.
-8. Insumo insuficiente é resposta válida e deve ser amigável — é melhor pedir mais contexto do que arriscar uma classificação errada.
+7. Fora do escopo agora é exceção rara — antes de usar, confirme que a dor realmente não se encaixa em nenhum dos 9 temas cobertos.
+8. "Bug na plataforma" e "Instabilidade e/ou incidente" só podem ser causa_raiz com validação técnica explícita no relato (ver GATILHOS DE VALIDAÇÃO TÉCNICA); sem isso, trate como hipótese.
+9. Se o tema for Plataformas Digitais e o tipo for Reclamação, a causa_raiz só pode vir da lista fechada de 5 opções (ver CAUSA RAIZ — PLATAFORMAS DIGITAIS); nunca use a lista geral para esse tema.
 
 FORMATO DE SAÍDA
 Responda SEMPRE e SOMENTE com um objeto JSON válido, sem markdown, sem crases, sem texto antes ou depois, seguindo exatamente este formato:
 
-Se insumo insuficiente:
-{"insumo_insuficiente": true, "mensagem_insumo_insuficiente": "string curta e amigável pedindo pra completar com a dor, o que foi investigado e como foi encerrado", "fora_do_escopo": false, "tema": null, "tipo_de_chamado": null, "subtipo_reclamacao": null, "motivo": null, "submotivo": null, "causa_raiz": null, "alerta_causa_raiz": null, "causa_raiz_aviso": null, "justificativa": "string", "confianca": "baixa"}
+Se realmente fora do escopo (não se encaixa em nenhum dos 8 temas):
+{"fora_do_escopo": true, "mensagem_fora_do_escopo": "Ei, não consegui identificar em qual tema esse atendimento se encaixa. Que tal chamar o time de Qualidade pra confirmar?", "tema": null, "tipo_de_chamado": null, "subtipo_reclamacao": null, "motivo": null, "submotivo": null, "causa_raiz": null, "alerta_causa_raiz": null, "justificativa": "string", "confianca": "alta|média|baixa"}
 
-Se fora do escopo:
-{"insumo_insuficiente": false, "fora_do_escopo": true, "mensagem_fora_do_escopo": "Ei, acredito que isso não seja sobre Plataforma Digital. Que tal chamar o time de Qualidade pra confirmar?", "tema": null, "tipo_de_chamado": null, "subtipo_reclamacao": null, "motivo": null, "submotivo": null, "causa_raiz": null, "alerta_causa_raiz": null, "causa_raiz_aviso": null, "justificativa": "string", "confianca": "alta|média|baixa"}
-
-Se dentro do escopo:
-{"insumo_insuficiente": false, "fora_do_escopo": false, "tema": "Plataformas Digitais", "tipo_de_chamado": "string", "subtipo_reclamacao": "Erro Arco|Insatisfação|null", "motivo": "string", "submotivo": "string", "causa_raiz": "string|null", "alerta_causa_raiz": "string|null", "causa_raiz_aviso": "string|null", "justificativa": "string curta explicando o raciocínio", "confianca": "alta|média|baixa"}`;
+Se dentro do escopo (em qualquer um dos 8 temas):
+{"fora_do_escopo": false, "tema": "Plataformas Digitais|Gestão de Pedidos|Entrega de Materiais|Produtos Físicos|Conteúdo Pedagógico|Devolução|Financeiro e Pagamentos|Gestão da Parceria|Atendimento (gatilhos)", "tipo_de_chamado": "string", "subtipo_reclamacao": "Erro Arco|Insatisfação|null", "motivo": "string", "submotivo": "string", "causa_raiz": "string|null", "alerta_causa_raiz": "string|null", "justificativa": "string curta explicando o raciocínio", "confianca": "alta|média|baixa"}`;
 function Spinner() {
   return /*#__PURE__*/React.createElement("div", {
     className: "loading"
@@ -672,13 +819,6 @@ function ResultCard({
   onCopy,
   copied
 }) {
-  if (data.insumo_insuficiente) {
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      className: "need-more-box"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "need-more-emoji"
-    }, "🤔"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, data.mensagem_insumo_insuficiente || "Preciso de um pouco mais de contexto pra classificar esse atendimento com segurança."), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, "Qual foi a dor ou pedido do cliente"), /*#__PURE__*/React.createElement("li", null, "O que foi investigado ou verificado"), /*#__PURE__*/React.createElement("li", null, "Como o atendimento foi encerrado")))));
-  }
   if (data.fora_do_escopo) {
     return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
       className: "oos-box"
@@ -732,11 +872,14 @@ function ResultCard({
     className: "field-value muted"
   }, "Não se aplica (só para Reclamação)"), data.alerta_causa_raiz && /*#__PURE__*/React.createElement("div", {
     className: "alert-note"
-  }, "⚠️ ", data.alerta_causa_raiz), data.causa_raiz_aviso && /*#__PURE__*/React.createElement("div", {
-    className: "causa-note"
-  }, "✅ ", data.causa_raiz_aviso))), data.justificativa && /*#__PURE__*/React.createElement("div", {
+  }, "⚠️ ", data.alerta_causa_raiz))), data.justificativa && /*#__PURE__*/React.createElement("div", {
     className: "justificativa-box"
-  }, /*#__PURE__*/React.createElement("strong", null, "Por quê:"), " ", data.justificativa));
+  }, /*#__PURE__*/React.createElement("strong", null, "Por quê:"), " ", data.justificativa), /*#__PURE__*/React.createElement("div", {
+    className: "result-actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "ghost",
+    onClick: onCopy
+  }, copied ? "Copiado ✓" : "Copiar JSON")));
 }
 function SageIllustration() {
   return /*#__PURE__*/React.createElement("div", {
@@ -999,37 +1142,56 @@ function ClassifierPage({
   const [status, setStatus] = useState("idle"); // idle | loading | done | error
   const [result, setResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [sheetUrl, setSheetUrl] = useState("");
+  const [urlInput, setUrlInput] = useState("");
+  const [showSheetPanel, setShowSheetPanel] = useState(false);
+  const [sheetSavedNote, setSheetSavedNote] = useState(false);
   const textareaRef = useRef(null);
-
-  // Envia a classificacao pro Google Forms, que joga a resposta direto na
-  // planilha vinculada. Usamos application/x-www-form-urlencoded (o mesmo
-  // formato que o proprio Forms usa) e mode "no-cors" porque o Forms nao
-  // libera CORS para leitura da resposta - por isso nao da pra confirmar
-  // sucesso por aqui; o jeito de validar e olhar a planilha ou testar via
-  // curl/Hoppscotch fora do navegador.
-  const sendToSheet = async payload => {
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const stored = await window.storage.get("sheet_webhook_url");
+        if (stored && stored.value) {
+          setSheetUrl(stored.value);
+          setUrlInput(stored.value);
+        }
+      } catch (e) {
+        // ainda não configurado, tudo bem
+      }
+    })();
+  }, []);
+  const saveSheetUrl = async () => {
+    const cleanUrl = urlInput.trim();
     try {
-      const formData = new URLSearchParams();
-      Object.entries(FORM_ENTRIES).forEach(([key, entryId]) => {
-        const value = payload[key];
-        formData.append(entryId, value === undefined || value === null ? "" : String(value));
-      });
-      await fetch(FORM_RESPONSE_URL, {
+      await window.storage.set("sheet_webhook_url", cleanUrl, false);
+      setSheetUrl(cleanUrl);
+      setSheetSavedNote(true);
+      setTimeout(() => setSheetSavedNote(false), 2200);
+    } catch (e) {
+      console.error("Não foi possível salvar o link da planilha", e);
+    }
+  };
+  const sendToSheet = async payload => {
+    if (!sheetUrl) return;
+    try {
+      await fetch(sheetUrl, {
         method: "POST",
         mode: "no-cors",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          "Content-Type": "text/plain"
         },
-        body: formData
+        body: JSON.stringify(payload)
       });
     } catch (e) {
-      console.error("Falha ao registrar no formulário", e);
+      console.error("Falha ao registrar na planilha", e);
     }
   };
   const classify = async () => {
     if (!text.trim()) return;
     setStatus("loading");
     setResult(null);
+    setCopied(false);
     try {
       const response = await fetch(CLASSIFY_ENDPOINT, {
         method: "POST",
@@ -1059,9 +1221,9 @@ function ClassifierPage({
         email: userEmail || "",
         resumo_atendimento: text,
         fora_do_escopo: parsed.fora_do_escopo,
-        mensagem_fora_do_escopo: parsed.insumo_insuficiente ? parsed.mensagem_insumo_insuficiente || "" : parsed.mensagem_fora_do_escopo || "",
+        mensagem_fora_do_escopo: parsed.mensagem_fora_do_escopo || "",
         tema: parsed.tema || "",
-        tipo_de_chamado: parsed.insumo_insuficiente ? "Insumo insuficiente" : parsed.tipo_de_chamado || "",
+        tipo_de_chamado: parsed.tipo_de_chamado || "",
         subtipo_reclamacao: parsed.subtipo_reclamacao || "",
         motivo: parsed.motivo || "",
         submotivo: parsed.submotivo || "",
@@ -1075,6 +1237,12 @@ function ClassifierPage({
       setErrorMsg("Não consegui classificar agora. Tenta de novo em alguns segundos, e se persistir, cola o resumo de um jeito mais direto.");
       setStatus("error");
     }
+  };
+  const handleCopy = () => {
+    if (!result) return;
+    navigator.clipboard.writeText(JSON.stringify(result, null, 2));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
   };
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "top-nav"
@@ -1129,12 +1297,32 @@ function ClassifierPage({
     className: "primary",
     onClick: classify,
     disabled: status === "loading" || !text.trim()
-  }, status === "loading" ? "Classificando…" : "Classificar atendimento"))), /*#__PURE__*/React.createElement("div", {
+  }, status === "loading" ? "Classificando…" : "Classificar atendimento")), /*#__PURE__*/React.createElement("button", {
+    className: "sheet-toggle",
+    onClick: () => setShowSheetPanel(!showSheetPanel)
+  }, /*#__PURE__*/React.createElement("span", {
+    className: `sheet-dot ${sheetUrl ? "on" : ""}`
+  }), sheetUrl ? "Planilha conectada" : "Conectar planilha de respostas"), showSheetPanel && /*#__PURE__*/React.createElement("div", {
+    className: "sheet-panel"
+  }, /*#__PURE__*/React.createElement("p", null, "Cole aqui a URL do Web App do Google Apps Script conectado à sua planilha. Toda vez que uma classificação for gerada, o resumo do atendimento e a sugestão de cada campo são enviados pra lá junto com data, horário e o seu e-mail."), /*#__PURE__*/React.createElement("div", {
+    className: "sheet-row"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: urlInput,
+    onChange: e => setUrlInput(e.target.value),
+    placeholder: "https://script.google.com/macros/s/SEU_ID/exec"
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: saveSheetUrl
+  }, "Salvar")), sheetSavedNote && /*#__PURE__*/React.createElement("div", {
+    className: "sheet-saved-note"
+  }, "Link salvo ✓"))), /*#__PURE__*/React.createElement("div", {
     id: "result-zone"
   }, status === "loading" && /*#__PURE__*/React.createElement(Spinner, null), status === "error" && /*#__PURE__*/React.createElement("div", {
     className: "error-box"
   }, errorMsg), status === "done" && result && /*#__PURE__*/React.createElement(ResultCard, {
-    data: result
+    data: result,
+    onCopy: handleCopy,
+    copied: copied
   })), /*#__PURE__*/React.createElement("div", {
     className: "footer-note"
   }, "Cobre apenas o tema Plataformas Digitais · não substitui a revisão de quem fecha o caso.", /*#__PURE__*/React.createElement("br", null), "Conectado como ", userEmail));
